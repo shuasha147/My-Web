@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebott Swift's Python Test - 让147统一数学界！</title>
+    <!-- 引入 CodeMirror 代码编辑器样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/darcula.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f6f8fa;
+            color: #24292f;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container { max-width: 860px; margin: 0 auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .header-title { font-weight: 600; color: #24292f; }
+        .header-title span:first-child { font-weight: 400; color: #57606a; margin-right: 8px; }
+        .header-right {
+            background-color: #ffffff; border: 1px solid #d0d7de;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; color: #57606a;
+        }
+
+        .problem-panel {
+            background-color: #ffffff; border: 1px solid #d0d7de;
+            border-radius: 8px; padding: 24px;
+            box-shadow: 0 1px 3px rgba(27,31,36,0.04);
+        }
+
+        p { margin-bottom: 16px; font-size: 15px; color: #24292f; }
+
+        code {
+            background-color: rgba(175,184,193,0.2);
+            padding: 2px 6px; border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 13.5px;
+        }
+
+        .editor-container {
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #2b2b2b;
+        }
+
+        .CodeMirror {
+            height: 280px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f6f8fa;
+            padding: 10px 15px;
+            border: 1px solid #d0d7de;
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            margin-top: -20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-run {
+            background-color: #2da44e;
+            color: white;
+            border: 1px solid rgba(27,31,36,0.15);
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-run:hover { background-color: #2c974b; }
+        .btn-run:disabled { background-color: #94d3a2; cursor: not-allowed; }
+
+        .status-text { font-size: 13px; color: #57606a; }
+
+        .terminal {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 14px;
+            padding: 16px;
+            border-radius: 8px;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .terminal .error { color: #ff7b72; }
+        .terminal .success { color: #7ee787; }
+        .terminal .info { color: #8b949e; font-style: italic; }
+        .terminal .warning { color: #e3b341; }
+
+        .example-block {
+            background-color: #f6f8fa; border: 1px solid #d0d7de;
+            border-radius: 8px; padding: 16px 20px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 14px; line-height: 1.8; margin-bottom: 20px;
+        }
+
+        .example-block .arrow { margin: 0 12px; color: #57606a; font-weight: bold; }
+
+        .instructions {
+            font-size: 15px; background-color: #f6f8fa;
+            padding: 16px 20px; border-radius: 8px;
+            border-left: 4px solid #cf222e;
+        }
+        .instructions p:last-child { margin-bottom: 0; }
+        .rules-list { padding-left: 1em; margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <span>Ebott Swift's Python Test</span> 让147统一数学界！
+        </div>
+        <div class="header-right">仅限Python语言</div>
+    </div>
+
+    <div class="problem-panel">
+        <p>请实现如下函数，输入均为小于<code>147 * (-1 + 4 + 7)</code>的非负整数，输出为任意一个与之相等的一个仅含1，4，7三个数字，仅使用四则运算（除法除外）与括号的字符串算式（其中1，4，7必须按顺序出现且出现次数相同）：</p>
+
+        <div class="editor-container">
+            <textarea id="code-editor">def for_the_king(n):
+    """Return an arithmetic expression containing only the numbers 1, 4, and 7, and using only addition, subtraction, multiplication, and parentheses. The numbers 1, 4, and 7 must appear in that exact order, and each must appear the same number of times."""
+    # Let 147 Unify Mathematics!
+    pass</textarea>
+        </div>
+
+        <div class="toolbar">
+            <button id="run-btn" class="btn-run" disabled onclick="runCode()">运行测试</button>
+            <span id="status-text" class="status-text">正在加载 Python 运行环境 (Pyodide)... 首次加载可能较慢</span>
+        </div>
+
+        <div id="terminal" class="terminal">
+            <span class="info">147 is waiting for your code...<br>            By the way, I'm sure you can't get full marks...</span>
+        </div>
+
+        <div class="example-block">
+            <div>for_the_king(0) <span class="arrow">→</span> '1 + 4 + 7 - 1 - 4 - 7' or '147 - 147' or just ''</div>
+            <div>for_the_king(100) <span class="arrow">→</span> '(1 - 4 - 7) * (1 - 4 - 7)'</div>
+            <div>for_the_king(147) <span class="arrow">→</span> '(14 + 7) * (14 - 7)' or just '147'</div>
+        </div>
+
+        <div class="instructions">
+            <p>本题建议的代码行数在 <code>14 + 7</code> 行以内。<br>本题结果仅用于终端展示，因此允许使用退格符 <code>\b</code>。</p>
+            <p>应当指出，由于本题不能使用除法，如下的输出是不合法的：</p>
+            <div class="example-block" style="margin-top: 10px; margin-bottom: 15px;">
+                <div>for_the_king(1) <span class="arrow">→</span> '(1 + 4 + 7) / (1 + 4 + 7)'</div>
+            </div>
+            <p>虽然返回任意的表达式都是合理的，但不应该将 <code>n = 1</code> 时的结果无限制进行加法来达成目的，这将被视作对147不虔诚的表现。</p>
+            <p>如果你想挑战更难的情形，试着遵守以下四条附加条件（可获得额外加分）：</p>
+            <p class="rules-list">
+                1. 仅使用 if 语句，不要使用循环；<br>
+                2. 确保 <code>for_the_king(0)</code> 的输出在终端上显示为 <code>''</code>；<br>
+                3. 确保四则运算符号与连接的数字之间有空格，正数省略正号，负数的数字部分与前面的负号之间不空格；<br>
+                4. 在 <code>14 - 7</code> 行及以内完成函数。
+            </p>
+            <p style="margin-top: 16px; font-weight: bold; color: #cf222e;">提示：系统包含 <code>14 - 7</code> 个测试用例（含随机用例），当且仅当全对且满足全部附加条件时获得满分</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+<script>
+    const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+        mode: "python",
+        theme: "darcula",
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        lineWrapping: true
+    });
+
+    let pyodide = null;
+    const runBtn = document.getElementById("run-btn");
+    const statusText = document.getElementById("status-text");
+    const terminal = document.getElementById("terminal");
+
+    async function initPyodide() {
+        try {
+            pyodide = await loadPyodide();
+            
+            const testHarness = `
+import json
+import re
+import ast
+import random
+import sys
+import io
+import tokenize
+
+sys.setrecursionlimit(10000)
+
+def _terminal_render(s):
+    out = []
+    for ch in s:
+        if ch == '\\b':
+            if out:
+                out.pop()
+        else:
+            out.append(ch)
+    return ''.join(out)
+
+def check_spacing(expr):
+    if not expr.strip(): return True
+    tokens = []
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(expr).readline):
+            if tok.type not in (tokenize.ENCODING, tokenize.NL, tokenize.NEWLINE, tokenize.ENDMARKER):
+                tokens.append((tok.type, tok.string, tok.start, tok.end))
+    except Exception:
+        return False
+    
+    expr_lines = expr.split('\\n')
+    def has_space_before(start_pos):
+        row, col = start_pos
+        if col == 0: return True
+        return expr_lines[row-1][col-1] in (' ', '\\t')
+    def has_space_after(end_pos):
+        row, col = end_pos
+        if col >= len(expr_lines[row-1]): return True
+        return expr_lines[row-1][col] in (' ', '\\t')
+        
+    for i, (tok_type, tok_str, start, end) in enumerate(tokens):
+        if tok_str in ('+', '*'):
+            if not has_space_before(start) or not has_space_after(end): return False
+        elif tok_str == '-':
+            is_binary = False
+            if i > 0:
+                prev_type, prev_str, _, _ = tokens[i-1]
+                if prev_type == tokenize.NUMBER or prev_str == ')':
+                    is_binary = True
+            if is_binary:
+                if not has_space_before(start) or not has_space_after(end): return False
+            else:
+                if has_space_after(end): return False
+    return True
+
+def _test_user_code(user_code_str):
+    report = {"score": 0, "details": [], "passed_cases": 0, "total_cases": 7}
+
+    rule_loop = True
+    rule_lines = False
+    zero_ok = False
+    final_order_ok = True
+    final_space_ok = True
+
+    lines = [line for line in user_code_str.split('\\n') if line.strip() and not line.strip().startswith('#')]
+    if len(lines) <= 7: rule_lines = True
+
+    try:
+        parsed_ast = ast.parse(user_code_str)
+        for node in ast.walk(parsed_ast):
+            if isinstance(node, (ast.For, ast.While)): rule_loop = False
+    except Exception as e:
+        report["details"].append(f"❌ 代码无法解析: {e}")
+        return report
+
+    namespace = {}
+    try:
+        exec(user_code_str, namespace)
+    except Exception as e:
+        report["details"].append(f"❌ 代码执行报错: {e}")
+        return report
+        
+    if 'for_the_king' not in namespace:
+        report["details"].append("❌ 未找到函数 for_the_king")
+        return report
+
+    func = namespace['for_the_king']
+    
+    fixed_cases = [0, 1, 14, 147, 1000, 1147]
+    random_case = random.randint(0, 1469)
+    test_cases = fixed_cases + [random_case]
+    report["details"].append(f"本轮随机测试用例为: n={random_case}")
+    
+    total_base_score = 0
+    total_bonus_score = 0
+
+    for n in test_cases:
+        try:
+            res = func(n)
+            if not isinstance(res, str):
+                report["details"].append(f"  n={n}: ❌ 返回值不是字符串")
+                final_order_ok = False
+                final_space_ok = False
+                continue
+                
+            clean_res = _terminal_render(res)
+            clean_res = re.sub(r'[+\\-*/]\\s*$', '', clean_res).strip()
+            clean_res = clean_res.replace('()', '(0)')
+            
+            is_correct = False
+            case_rule3 = False
+            case_core = False
+            
+            if n == 0:
+                if clean_res == "":
+                    is_correct = True
+                    zero_ok = True
+                    case_rule3 = True
+                    case_core = True
+                elif eval(clean_res) == 0:
+                    is_correct = True
+                else:
+                    report["details"].append(f"  n=0: ❌ 展示不符合要求")
+                    continue
+            else:
+                if clean_res != "" and '/' not in clean_res:
+                    try:
+                        if eval(clean_res) == n:
+                            is_correct = True
+                    except:
+                        pass
+            
+            if not is_correct:
+                if n != 0: report["details"].append(f"  n={n}: ❌ 计算错误或非法")
+                final_order_ok = False
+                final_space_ok = False
+                continue
+
+            report["passed_cases"] += 1
+            case_base = 10
+            
+            n_global = sum([rule_loop, zero_ok, rule_lines])
+            case_global_bonus = 2 * n_global
+            
+            if n != 0:
+                if check_spacing(clean_res): case_rule3 = True
+                numbers = re.findall(r'\\d', clean_res)
+                if all(num in ['1', '4', '7'] for num in numbers):
+                    seq_str = "".join(numbers)
+                    c1, c4, c7 = seq_str.count('1'), seq_str.count('4'), seq_str.count('7')
+                    if c1 == c4 == c7 and c1 > 0 and seq_str == "147" * c1:
+                        case_core = True
+            
+            m_local = sum([case_rule3, case_core])
+            case_local_bonus = 2 * m_local
+            
+            if not case_rule3: final_space_ok = False
+            if not case_core: final_order_ok = False
+
+            total_base_score += case_base
+            total_bonus_score += (case_global_bonus + case_local_bonus)
+            
+            report["details"].append(f"  n={n}: ✅ 正确 (基础10 + 全局{n_global*2} + 局部{m_local*2} = {case_base + case_global_bonus + case_local_bonus}分)")
+
+        except Exception as e:
+            report["details"].append(f"  n={n}: ❌ 运行时异常: {e}")
+            final_order_ok = False
+            final_space_ok = False
+
+    all_correct = (report["passed_cases"] == report["total_cases"])
+    
+    if all_correct and rule_loop and zero_ok and rule_lines and final_order_ok and final_space_ok:
+        report["score"] = 147
+        report["details"].append(f"")
+        report["details"].append(f"✨ 全部用例通过且完美符合所有规则！让147统一数学界！（140 + 7）")
+    else:
+        report["score"] = total_base_score + total_bonus_score
+    
+    report["details"].insert(0, f"最终得分: {report['score']} / 140")
+    report["details"].insert(1, f"通过用例数: {report['passed_cases']}/{report['total_cases']} | 基础分: {total_base_score} | 附加分: {total_bonus_score}")
+    
+    # 完全恢复你原来的判定文案
+    report["details"].append("")
+    report["details"].append(f"{'✅ [语法条件] 仅使用 if 语句，未检测到循环。' if rule_loop else '❌ [语法条件] 未检测到循环语句。'}")
+    report["details"].append(f"{'✅ [终端条件] 满足 n=0 终端展示为空串的要求。' if zero_ok else '❌ [终端条件] 未满足 n=0 终端展示为空串的要求。'}")
+    report["details"].append(f"{'✅ [规范条件] 空格与正负号处理完美。' if final_space_ok and report['passed_cases'] > 0 else '❌ [规范条件] 空格与正负号处理存在瑕疵。'}")
+    report["details"].append(f"{'✅ [行数条件] 代码行数在 14 - 7 行及以内。' if rule_lines else '❌ [行数条件] 代码行数超过 14 - 7 行。'}")
+
+    if final_order_ok and report['passed_cases'] > 0: 
+        report["details"].append("✅ [核心规则] 1,4,7 严格按顺序且次数相同。")
+    else:
+        report["details"].append("❌ [核心规则] 1,4,7 出现顺序或次数不匹配。")
+
+    return report
+
+_test_user_code
+`;
+            await pyodide.runPythonAsync(testHarness);
+            statusText.innerText = "Python 环境就绪！";
+            statusText.style.color = "#57606a";
+            runBtn.disabled = false;
+        } catch (err) {
+            statusText.innerText = "环境加载失败，请刷新重试";
+            statusText.style.color = "#cf222e";
+            console.error(err);
+        }
+    }
+
+    async function runCode() {
+        if (!pyodide) return;
+        runBtn.disabled = true;
+        runBtn.innerText = "运行中...";
+        terminal.innerHTML = '<span class="info">正在执行极其严苛的验证测试...</span>';
+
+        const userCode = editor.getValue();
+
+        try {
+            pyodide.globals.set("user_code_str", userCode);
+            const resultJson = await pyodide.runPythonAsync(`json.dumps(_test_user_code(user_code_str))`);
+            const result = JSON.parse(resultJson);
+
+            if (result.error) {
+                terminal.innerHTML = `<span class="error">${result.error}</span>`;
+            } else {
+                let html = '<div style="font-family: monospace; line-height: 1.6;">';
+                
+                result.details.forEach(line => {
+                    if (line.includes('最终得分') || line.includes('通过用例数')) {
+                        html += `<span style="font-size: 1.2em; font-weight: bold; color: #e3b341; display: block; margin-bottom: 8px;">${line}</span>`;
+                    } else if (line.includes('✅') || line.includes('✨')) {
+                        html += `<span class="success">${line}</span><br>`;
+                    } else if (line.includes('❌') || line.includes('⚠️')) {
+                        html += `<span class="error">${line}</span><br>`;
+                    } else if (line.includes('随机')) {
+                        html += `<span class="warning" style="font-weight: bold;">${line}</span><br>`;
+                    } else if (line === "") {
+                        html += `<br>`;
+                    } else {
+                        html += `<span class="info" style="color: #8b949e;">${line}</span><br>`;
+                    }
+                });
+
+                html += '</div>';
+                terminal.innerHTML = html;
+            }
+        } catch (err) {
+            terminal.innerHTML = `<span class="error">系统错误: ${err.message}</span>`;
+        } finally {
+            runBtn.disabled = false;
+            runBtn.innerText = "运行测试";
+        }
+    }
+
+    window.addEventListener('load', initPyodide);
+</script>
+
+</body>
+</html>
